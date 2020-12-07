@@ -1,0 +1,22 @@
+---
+# Pipeline to sign and publish
+- load fail_on_error True filter_invalid True:
+   # Federation Metadata 
+   - https://apan.manager.aaf-experimentation.cloud.edu.au/rr3/metadata/service/aHR0cHM6Ly90ZXN0LmZlZGlkcC5hcGFuLm5ldC9pZHAvc2hpYmJvbGV0aA~~/metadata.xml
+- select:
+- reginfo:
+    authority: https://apan.net/
+    policy:
+      en: https://apan.net/policy.html
+- finalize:
+    cacheDuration: PT1H
+    validUntil: P9D
+    Name: https://md.apan.net/apan-metadata.xml
+- sign:
+    key: /opt/metadata/sign.key
+    cert: /opt/metadata/sign.crt
+- xslt:
+    stylesheet: pp.xsl
+## Publish directly to web server
+- publish: /var/www/metadata/apan/apan-metadata.xml
+- stats
